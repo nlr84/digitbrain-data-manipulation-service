@@ -41,7 +41,7 @@ docker run -d --name DataManipulatioAPI -p 5000:5000 DataManipulatioAPI
 
 In example, openning _http://LocalContainerIP:5000/api/v2/healthcheck_, you will see
 
-```
+```sh
 {status:"OK"}
 
 CODE: 200
@@ -55,28 +55,39 @@ Endpoint			Response format	Response Structure
 /api/v2/unit_conversion	JSON 	{
 
 Payload Structure:
+```sh
 {
 "from": "Source value unit "(String); 
  "to": "Desired unit to get with the conversion"(String); 
  "value": Source numeric value(int, float,double)
 }	
-
+```
 
 Response:
-
+```sh
 {
 "unit": String selected unit,
  "value": converted value
 } 
+```
 
 ## Convert files to another formats
 
-JSON -> CSV	/api/v2/convert_json_to_csv	JSON File	CSV File
 
-CSV -> JSON	/api/v2/convert_csv_to_json	CSV File	JSON File
-
-CSV -> XLSX	/api/v2/convert_csv_to_xlsx	CSV File	XLSX File
-
-XLSX -> CSV	/api/v2/convert_xlsx_to_csv	XLSX File	CSV File 
-
+JSON -> CSV	
+```sh
+/api/v2/convert_json_to_csv	JSON File	CSV File
+```
+CSV -> JSON
+```sh
+	/api/v2/convert_csv_to_json	CSV File	JSON File
+```
+CSV -> XLSX
+```sh
+	/api/v2/convert_csv_to_xlsx	CSV File	XLSX File
+```
+XLSX -> CSV
+```sh
+	/api/v2/convert_xlsx_to_csv	XLSX File	CSV File 
+```
 
