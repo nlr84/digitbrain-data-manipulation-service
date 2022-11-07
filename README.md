@@ -51,8 +51,11 @@ CODE: 200
 
 ## Convert units
 
-Endpoint			Response format	Response Structure
-/api/v2/unit_conversion	JSON 	{
+Endpoint
+
+```sh
+/api/v2/unit_conversion	JSON 	
+```
 
 Payload Structure:
 ```sh
