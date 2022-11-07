@@ -72,7 +72,11 @@ Response:
 ## Convert files to another formats
 
 JSON -> CSV	/api/v2/convert_json_to_csv	JSON File	CSV File
+
 CSV -> JSON	/api/v2/convert_csv_to_json	CSV File	JSON File
+
 CSV -> XLSX	/api/v2/convert_csv_to_xlsx	CSV File	XLSX File
+
 XLSX -> CSV	/api/v2/convert_xlsx_to_csv	XLSX File	CSV File 
+
 
