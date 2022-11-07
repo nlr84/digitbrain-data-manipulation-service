@@ -83,14 +83,14 @@ JSON -> CSV
 ```
 CSV -> JSON
 ```sh
-	/api/v2/convert_csv_to_json	CSV File	JSON File
+/api/v2/convert_csv_to_json	CSV File	JSON File
 ```
 CSV -> XLSX
 ```sh
-	/api/v2/convert_csv_to_xlsx	CSV File	XLSX File
+/api/v2/convert_csv_to_xlsx	CSV File	XLSX File
 ```
 XLSX -> CSV
 ```sh
-	/api/v2/convert_xlsx_to_csv	XLSX File	CSV File 
+/api/v2/convert_xlsx_to_csv	XLSX File	CSV File 
 ```
 
