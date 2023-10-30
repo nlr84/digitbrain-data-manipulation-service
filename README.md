@@ -1,96 +1,212 @@
-# digitbrain-data-manipulation-service
-DIGITBrain Data Manipulation Service
 
-# DIGITBRAIN Data Manipulation API
+---
+DataManipulation Service API Documentation
+---
+## Table of Contents
 
-This project is developed in python together with FLASK and Pint python libraries. 
-For its use, it will be containerized in Docker.
+1. [Introduction](#introduction)
+2. [Initial Configuration](#initial-configuration)
+3. [Endpoints](#endpoints)
+   - 3.1 [Health Check](#health-check)
+   - 3.2[Unit Conversion](#unit-conversion)
+   - 3.3 [File Conversion](#file-conversion)
+   - 3.4 [Image Manipulation](#image-manipulation)
+   - 3.5 [Video Manipulation](#video-manipulation)
+4. [Annotations and Considerations](#annotationsandConsiderations)
 
-## Build Docker image
+---
 
-You can directly use Data Manipulation API image, or
+## 1 - Introduction
 
-### Build with docker-compose command
+The DataManipulation service is an API designed to handle a variety of tasks related to data conversion and manipulation. This document describes how to use each of the available endpoints.
 
-```sh
-docker-compose  build
-```
+## 2 - Initial Configuration
 
-### Build with docker command
+**Base URL**: `http://<your-server>:5000/`
 
-```sh
-docker build -t DataManipulatioAPI -f Dockerfile .
-```
+**Supported conversions and manipulation Types**: 
 
-## Run
+- Files in base64: JSON, CSV, XLSX (JSON supports raw JSON)
+- Video and images: base64 for images and videos.
 
-### Run with docker-compose command
+## 3 - Endpoints
 
-```sh
-docker-compose up -d
-```
+### 3.1 - Health Check
 
-### Run with docker command
+- **Endpoint**: `/api/v2/healthcheck`
+- **Method**: `GET`
+- **Description**: Checks if the service is operational.
+- **Parameters**: None
+- **Successful Response**: `OK`
+- **Success Code**: `200`
 
-```sh
-docker run -d --name DataManipulatioAPI -p 5000:5000 DataManipulatioAPI
-```
+---
 
+### 3.2 - Unit Conversion
 
-## Check if docker container is running
+- **Endpoint**: `/api/v2/unit_conversion`
+- **Method**: `POST`
+- **Description**: Converts a quantity between two units.
 
-In example, openning _http://LocalContainerIP:5000/api/v2/healthcheck_, you will see
+**Payload**: 
 
-```sh
-{status:"OK"}
+- **from**: (Required) The unit being converted from.
+- **to**: (Required) The unit being converted to.
+- **value**: (Required) The value to convert.
 
-CODE: 200
-``` 
+**Payload Example**:
 
-## This project can do
-
-## Convert units
-
-Endpoint
-
-```sh
-/api/v2/unit_conversion	JSON 	
-```
-
-Payload Structure:
-```sh
+```json
 {
-"from": "Source value unit "(String); 
- "to": "Desired unit to get with the conversion"(String); 
- "value": Source numeric value(int, float,double)
-}	
+    "from": "meters",
+    "to": "inches",
+    "value": 1
+}
 ```
 
-Response:
-```sh
+**Successful Response**: JSON object with the converted amount.
+
+```json
 {
-"unit": String selected unit,
- "value": converted value
-} 
+    "unit": "inches",
+    "value": 39.3701
+}
 ```
 
-## Convert files to another formats
+---
 
+### 3.3 - File Conversion
 
-JSON -> CSV	
-```sh
-/api/v2/convert_json_to_csv	JSON File	CSV File
-```
-CSV -> JSON
-```sh
-/api/v2/convert_csv_to_json	CSV File	JSON File
-```
-CSV -> XLSX
-```sh
-/api/v2/convert_csv_to_xlsx	CSV File	XLSX File
-```
-XLSX -> CSV
-```sh
-/api/v2/convert_xlsx_to_csv	XLSX File	CSV File 
+- **Endpoint**: `/api/v2/file_conversion`
+- **Method**: `POST`
+- **Description**: Converts files between different formats.
+
+**Payload**: 
+
+- **conversion_type**: (Required) Type of conversion, can be `"json_to_csv"`, `"csv_to_json"`, `"csv_to_xlsx"`, `"xlsx_to_csv"`.
+- **file**: (Required) File data in base64 or in raw JSON format.
+
+**Payload Examples**:
+
+For JSON to CSV:
+```json
+{
+    "conversion_type": "json_to_csv",
+    "file": {
+        "name": "John",
+        "age": 30
+    }
+}
 ```
 
+For CSV to JSON:
+```json
+{
+    "conversion_type": "csv_to_json",
+    "file": "Base64-Encoded-CSV"
+}
+```
+
+**Responses**: 
+
+- `200 OK` with converted data in base64 or in JSON format.
+- `400 Bad Request` if the conversion type is incorrect or data is missing.
+- `500 Internal Server Error` for general errors.
+
+---
+
+### 3.4 - Image Manipulation
+
+- **Endpoint**: `/api/v2/manipulate_image`
+- **Method**: `POST`
+- **Description**: Applies effects to an image.
+
+**Payload**: 
+
+- **image**: (Required) Base64 encoded image.
+- **resize**: (Optional) Array `[width, height]` to resize the image.
+- **color**: (Optional) Color transformations, `"grayscale"`, `"negative"`.
+- **rotation**: (Optional) Angle for rotation.
+
+**Payload Example**:
+
+```json
+{
+    "image": "<Base64-Encoded-Image>",
+    "resize": [800, 600],
+    "color": "grayscale",
+    "rotation": 90
+}
+```
+
+---
+
+### 3.5 - Video Manipulation
+
+- **Endpoint**: `/api/v2/manipulate_video`
+- **Method**: `POST`
+- **Description**: Manipulates a video based on provided parameters.
+
+**Payload**: 
+
+- **video**: (Required) Base64 encoded video.
+- **color**: (Optional) `"grayscale"`.
+- **rotation**: (Optional) Rotation angle.
+- **resize**: (Optional) Array `[width, height]` for resizing.
+- **split**: (Optional) Boolean to split the video.
+- **cut_scene**: (Optional) Object with `start` and `end` time in seconds.
+
+**Payload Example**:
+
+```json
+{
+    "video": "<Base64-Encoded-Video>",
+    "color": "grayscale",
+    "rotation": 90,
+    "resize": [1280, 720],
+    "split": true,
+    "cut_scene": {
+        "start": 2,
+        "end": 5
+    }
+}
+```
+
+---
+
+### Response
+
+- `200 OK`: With manipulated video, if `split` is set to `false`.
+- `200 OK`: With an array of split video segments, if `split` is set to `true`.
+- `400` Bad Request: The server could not understand the request.
+- `500` Internal Server Error: An error occurred on the server.
+
+---
+
+# 4 - Annotations and Considerations
+
+## 4.1 - File Format Conversion
+
+File conversions may lead to a loss of information if the structure is not consistent within the file itself. More complex conversions could result in losing columns.
+
+## 4.2 - Video manipulation
+
+Video manipulation can be a slow process and should be considered in critical systems or those requiring high responsiveness.
+
+In general terms, a 40-megabyte video may take around 2 to 6 seconds on average, depending on the modifications requested. The most computationally intensive task occurs when generating frames using the 'split' function.
+
+###  4.2.1 - Internal Processing Order
+
+It's important to note that video manipulation has an order to optimize processing times and workloads. The internal treatment order is as follows:
+
+1. Apply scene cutting
+2. Resize
+3. Rotate
+4. Apply color effects
+5. Split into frames.
+
+## 4.3 - Unit Converter
+
+You should consult the table of supported units and their syntax, as contained in the [Supported units](Supported_units.md)
+
+---
